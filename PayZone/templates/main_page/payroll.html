@@ -1,0 +1,396 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayZone - Payroll</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/png" sizes="16x16">
+
+        <style>
+        /* Custom CSS for styling */
+        body {
+            font-family: 'Raleway', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('{% static "images/bg.jpg" %}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-color: rgba(255, 255, 255, 0.7);
+            background-attachment: fixed;
+        }
+
+        /* Set text color to black for all elements */
+        * {
+            color: #000 !important;
+        }
+
+        /* Navbar styling */
+        .navbar {
+            background-color: rgba(51, 51, 51, 0.1);
+        }
+
+        /* Larger logo */
+        .navbar-brand img {
+            width: 120px;
+            height: auto;
+        }
+
+        /* Navigation links styling */
+        .navbar-nav a {
+            font-weight: bold;
+            margin-left: 15px;
+        }
+
+        /* Styling for buttons */
+        .btn {
+            font-weight: bold;
+        }
+
+        /* Primary button styling */
+        .btn-primary {
+            background-color: #007bff;
+            color: #ffffff;
+            transition: opacity 0.1s;
+        }
+
+        /* Reduce opacity only on hover */
+        .btn-primary:hover {
+            opacity: 0.8;
+        }
+
+        /* Footer styling */
+        .footer {
+            background-color: rgba(51, 51, 51, 0.1);
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        /* Content section styling */
+        .content {
+            padding: 40px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 1100px; /* Added max-width */
+            margin: 0 auto; /* Center content horizontally */
+        }
+
+        /* Smaller image placeholder */
+        .image-placeholder {
+            width: 80px;
+            height: auto;
+            margin: 20px auto;
+        }
+
+        /* Style for the company name and slogan text */
+        .company-name {
+            font-size: 35px; /* Set a uniform font size for all content */
+            font-weight: bolder;
+            text-align: center;
+        }
+
+        .slogan {
+            font-size: 20px; /* Set a uniform font size for all content */
+            text-align: center;
+        }
+
+        /* Style for the description text */
+        .description {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 20px; /* Set a uniform font size for all content */
+        }
+
+        /* Style for the logo, company name, and slogan in one line */
+        .logo-line {
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-line img {
+            margin-right: 10px;
+            width: 400px; /* Increased logo size */
+            height: auto;
+        }
+
+        /* Style for the Welcome To heading */
+        .headers {
+            font-size: 35px;
+            font-weight: bolder;
+            margin-bottom: 70px; /* Add margin to create space after Welcome To */
+        }
+
+        /* Style for the blue text */
+        .blue-text {
+            color: #0BB5FF;
+        }
+
+        /* Mobile-friendly menu and login/signup buttons synchronization */
+        @media (max-width: 768px) {
+            .navbar-toggler:not(.collapsed) + .navbar-collapse .navbar-nav.ml-auto {
+                display: block;
+            }
+            .navbar-nav.ml-auto .btn {
+                display: inline-block; /* Change to inline-block to keep buttons visible */
+            }
+            .navbar-nav.ml-auto .btn + .btn {
+                margin-left: 10px; /* Add margin-left to create spacing between buttons */
+            }
+        }
+
+        /* Center error message */
+        .error-notice {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50vh;
+        }
+
+        /* Improved error message styling */
+        .oaerror {
+            width: 60%;
+            background-color: #ffffff;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-left-width: 5px;
+            border-radius: 3px;
+            font-family: 'Raleway', sans-serif;
+            font-size: 16px;
+            text-align: start;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+        }
+
+        .danger {
+            border-left-color: #d9534f;
+            background-color: rgba(217, 83, 79, 0.1);
+        }
+
+        /* Style for the login button */
+        .login-button {
+            margin-top: 20px;
+        }
+
+                .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            border: 0.5rem solid #0BB5FF;
+            border-right: 0.5rem solid transparent;
+            border-radius: 50%;
+            animation: spin 0.5s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body style="font-family: 'Raleway', sans-serif;">
+
+    <!-- Loader -->
+    <div class="loader" id="loader">
+        <div class="spinner-border text-primary" role="status" style="animation-duration: 0.5s;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light" style="padding-top: 20px; padding-bottom: 20px; background-color: rgba(51, 51, 51, 0);">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><img src="{% static 'images/logo.png' %}" alt="Logo"></a>
+                <!-- Navbar Toggler for Responsive Design -->
+                <style>
+                    .navbar-toggler:focus {
+                        box-shadow: 0 0 0px 2px lightskyblue;
+                    }
+
+                    .hamburger {
+                        width: 7vw; /* Size remains same and ensure it stays wherever I want it to stay. */
+                        height: auto;
+                        object-fit: contain;
+                    }
+
+                    @media (max-width: 768px) {
+                        .hamburger {
+                            width: 60px; /* Adjust the size for smaller screens */
+                        }
+                    }
+                </style>
+                <button class="navbar-toggler custom-toggler ms-auto" id="hamburgerButton" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <img src="{% static 'images/hamburger.gif' %}" alt="Hamburger" class="hamburger">
+                </button>
+
+            <!-- Navbar Links -->
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ml-auto">
+                        <!-- Don't Remove For Future Use -->
+                            {% comment %}<li class="nav-item active">
+                                <a class="btn btn-primary" href="{% url 'home' %}" style="background-color: lightgrey; border:2px solid lightgrey;">Home</a>
+                            </li>{% endcomment %}
+                            <li class="nav-item active">
+                                <a class="nav-link" href="/dashboard">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/departments">Departments</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/employees">Employees</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/payroll" style="color: #0BB5FF !important;">Payroll</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/reports">Reports</a>
+                            </li>
+                            {% if request.user.is_authenticated %}
+                                <li class="nav-item">
+                                    <a class="btn btn-primary" href="#" id="logout-link">Logout</a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item">
+                                    <a class="btn btn-primary" href="{% url 'login' %}">Login</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel" style="font-family: 'Raleway', sans-serif; font-weight: bold;">Logout Confirmation</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="font-family: 'Raleway', sans-serif;">
+                    <p class="text-center" style="font-size: 20px;">Are you sure you want to log out from PayZone?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a href="{% url 'PayZone:logout' %}" class="btn btn-danger">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Content -->
+    {% if request.user.is_authenticated %}
+        <div class="container-fluid mt-4">
+            <div class="row">
+                <div class="col-md-2">
+                    <!-- Sidebar -->
+                    <div class="bg-light sidebar">
+                        <!-- Sidebar content goes here -->
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <!-- Main content area -->
+
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- List of Departments header -->
+                            <div style="padding-top: 300px; text-align: center;">
+                                <h1 class="text-center" style="font-weight: bolder; color: #0BB5FF !important;">Coming Soon...</h1>
+                            </div>
+                    <!-- Add our dashboard widgets and content here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="error-notice">
+            <div class="oaerror danger">
+                <strong>Error!</strong> You must be signed-in to view the content.
+                <br><br> You will be automatically redirected to the home page within a few seconds.
+            </div>
+        </div>
+    {% endif %}
+
+<!-- Prevents redirection when logged it -Clark -->
+    <script>
+        // Add click event handler for logout link
+        document.getElementById('logout-link').addEventListener('click', function(event) {
+            // Show the logout confirmation modal
+            $('#logoutModal').modal('show');
+        });
+    </script>
+<!-- Prevents User from going back after logging out -->
+    <script>
+        const  isAuthenticated = {% if user.is_authenticated %}true{% else %}false{% endif %}
+        if (!isAuthenticated){
+            //Timer that allows you to see the message of suffering and brings you back to the homepage after seeing it (eme lalako ini Kerby, Clark comment ini)
+            let timer;
+            function startTimer() {timer = setTimeout(redirectToHomepage, 5000);}
+            //Redirects you to homepage (eme lalako ini Kerby, Clark comment ini)
+            function redirectToHomepage() {window.location.href = '/';}
+            function preventBack() {window.history.forward();}
+            //Prevents Single-Page Application, meaning of this is, code only applies to a single-page (eme lalako ini Kerby, Clark comment ini)
+            startTimer();
+            window.addEventListener('beforeunload', function (e) {clearTimeout(timer);});
+        }
+
+    </script>
+    <!-- Prevents user from seeing the page's content after logout -Clark -->
+    <style>
+        body.logged-out {
+            display: none;
+        }
+    </style>
+    <!-- The <style> will hide the page content's to prevent the user from having a glimpse -Clark -->
+    <script>
+    (function () {
+        const isLoggedOut = true;
+        if (isLoggedOut) {
+            window.onpageshow = function(event) {
+                if (event.persisted) {
+                    document.body.classList.add('logged-out');
+                    window.location.reload();
+                }
+            };
+        }
+    })();
+    </script>
+
+    <!-- Add script to hide loader when content is loaded -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Delay for 0.5 second (or your desired duration) before hiding the loader
+            setTimeout(function() {
+                // Hide loader after the delay
+                document.getElementById('loader').style.display = 'none';
+            }, 500); // 500 milliseconds = 0.5 second
+
+            // Optionally, you can set the animation duration dynamically as well
+            const spinner = document.querySelector('.spinner-border');
+            spinner.style.animationDuration = '0.5s'; // Adjust the duration as needed
+        });
+    </script>
+</body>
+</html>
